@@ -1,5 +1,6 @@
 {
   "name": "makerkit-review",
+  "version": "1.0.0",
   "description": "Makerkit-specific code quality reviewer for TypeScript, React, Next.js, and Supabase architectures",
   "author": {
     "name": "lets-forge"
