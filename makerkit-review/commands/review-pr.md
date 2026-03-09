@@ -1,5 +1,5 @@
 ---
-description: "Comprehensive PR review using specialized agents"
+description: "Comprehensive PR review using specialized agents including Makerkit-specific checks"
 argument-hint: "[review-aspects]"
 allowed-tools: ["Bash", "Glob", "Grep", "Read", "Task"]
 ---
@@ -24,6 +24,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
    - **errors** - Check error handling for silent failures
    - **types** - Analyze type design and invariants (if new types added)
    - **code** - General code review for project guidelines
+   - **makerkit** - Makerkit-specific quality review (TypeScript strict, RLS, server actions, i18n)
    - **simplify** - Simplify code for clarity and maintainability
    - **all** - Run all applicable reviews (default)
 
@@ -35,7 +36,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 4. **Determine Applicable Reviews**
 
    Based on changes:
-   - **Always applicable**: code-reviewer (general quality)
+   - **Always applicable**: code-reviewer (general quality), code-quality-reviewer (Makerkit standards)
    - **If test files changed**: pr-test-analyzer
    - **If comments/docs added**: comment-analyzer
    - **If error handling changed**: silent-failure-hunter
@@ -91,28 +92,43 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 
 **Full review (default):**
 ```
-/pr-review-toolkit:review-pr
+/makerkit-review:review-pr
 ```
 
 **Specific aspects:**
 ```
-/pr-review-toolkit:review-pr tests errors
+/makerkit-review:review-pr tests errors
 # Reviews only test coverage and error handling
 
-/pr-review-toolkit:review-pr comments
+/makerkit-review:review-pr makerkit
+# Reviews only Makerkit-specific standards
+
+/makerkit-review:review-pr comments
 # Reviews only code comments
 
-/pr-review-toolkit:review-pr simplify
+/makerkit-review:review-pr simplify
 # Simplifies code after passing review
 ```
 
 **Parallel review:**
 ```
-/pr-review-toolkit:review-pr all parallel
+/makerkit-review:review-pr all parallel
 # Launches all agents in parallel
 ```
 
 ## Agent Descriptions:
+
+**code-quality-reviewer**:
+- Makerkit architecture validation (RLS, account_id scoping, enhanceAction)
+- TypeScript strict mode (no 'any', proper error handling, 'server-only')
+- React/Next.js compliance ('use client', react-hook-form, server components)
+- i18n completeness (Trans/t(), no hardcoded strings)
+- Database security (RLS policies, constraints, triggers)
+
+**code-reviewer**:
+- Checks CLAUDE.md compliance
+- Detects bugs and issues
+- Reviews general code quality
 
 **comment-analyzer**:
 - Verifies comment accuracy vs code
@@ -134,11 +150,6 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 - Reviews invariant expression
 - Rates type design quality
 
-**code-reviewer**:
-- Checks CLAUDE.md compliance
-- Detects bugs and issues
-- Reviews general code quality
-
 **code-simplifier**:
 - Simplifies complex code
 - Improves clarity and readability
@@ -158,7 +169,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 **Before committing:**
 ```
 1. Write code
-2. Run: /pr-review-toolkit:review-pr code errors
+2. Run: /makerkit-review:review-pr code makerkit errors
 3. Fix any critical issues
 4. Commit
 ```
@@ -166,7 +177,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 **Before creating PR:**
 ```
 1. Stage all changes
-2. Run: /pr-review-toolkit:review-pr all
+2. Run: /makerkit-review:review-pr all
 3. Address all critical and important issues
 4. Run specific reviews again to verify
 5. Create PR
