@@ -1,11 +1,16 @@
 {
   "name": "forge-plugins",
-  "description": "Custom Claude Code plugins by lets-forge",
+  "owner": {
+    "name": "lets-forge"
+  },
+  "metadata": {
+    "description": "Custom Claude Code plugins by lets-forge"
+  },
   "plugins": [
     {
       "name": "makerkit-review",
       "description": "Makerkit-specific code quality reviewer for TypeScript, React, Next.js, and Supabase architectures",
-      "path": "makerkit-review"
+      "source": "./makerkit-review"
     }
   ]
 }
